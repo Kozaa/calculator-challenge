@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import isDividingByZero from "../utils/isDividingByZero";
 import isOctalLiteral from "../utils/isOctalLiteral";
+import getSequence from "../utils/getSequence";
 
 export default createStore({
   state: {
@@ -24,7 +25,12 @@ export default createStore({
     },
 
     addToSequence: (state, payload) => {
-      if (!state.sequence && !state.currentNumber) {
+      if (isDividingByZero(state)) return;
+
+      if (!state.currentNumber || state.currentNumber === "-") {
+        if (payload === "-") {
+          state.currentNumber = "-";
+        }
         return;
       }
 
@@ -32,10 +38,8 @@ export default createStore({
         state.currentNumber = state.currentNumber.slice(1);
       }
 
-      if (isDividingByZero(state)) return;
-
       if (state.currentNumber) {
-        state.sequence = `${state.sequence}${state.currentNumber}${payload}`;
+        state.sequence = getSequence(state, payload);
         state.currentNumber = "";
       } else {
         state.sequence = `${state.sequence.slice(0, -1)}${payload}`;
@@ -48,7 +52,7 @@ export default createStore({
           const currentSum = eval(state.sequence.slice(0, -1));
           const result = (currentSum / 100) * state.currentNumber;
           state.sequence = "";
-          state.currentNumber = result;
+          state.currentNumber = result.toString();
         } else {
           alert("In order to calculate percenteges, use *, ex. 100 * 20%");
         }
@@ -64,14 +68,21 @@ export default createStore({
     },
 
     result: (state) => {
-      if (isDividingByZero(state)) return;
+      if (
+        (!state.currentNumber && !state.sequence) ||
+        state.currentNumber === "-" ||
+        isDividingByZero(state)
+      ) {
+        return;
+      }
       if (isOctalLiteral(state)) {
         state.currentNumber = state.currentNumber.slice(1);
       }
+
       if (isNaN(state.sequence.slice(-1)) && !state.currentNumber) {
         state.sequence = state.sequence.slice(0, -1);
       } else {
-        state.sequence = `${state.sequence}${state.currentNumber}`;
+        state.sequence = getSequence(state);
       }
       state.currentNumber = eval(state.sequence).toString();
       state.sequence = "";
