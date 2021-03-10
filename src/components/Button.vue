@@ -1,11 +1,14 @@
 <template>
-  <button class="btn">
-    btn
+  <button :class="['btn', { plus: sign === '+' }]">
+    {{ sign }}
   </button>
 </template>
 
 <script>
-export default {};
+export default {
+  name: "Button",
+  props: ["sign"],
+};
 </script>
 
 <style lang="scss" scoped>
@@ -17,8 +20,16 @@ export default {};
     size: inherit;
   }
 
-  background-color: green;
-  border: 1px solid black;
+  background-color: #8ea2c1;
+  border: 2px solid black;
   border-radius: 5px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.plus {
+  grid-row: span 2;
 }
 </style>

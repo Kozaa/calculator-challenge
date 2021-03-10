@@ -1,35 +1,32 @@
 <template>
   <div class="btnWrapper">
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
-    <Button />
+    <Button
+      v-for="button in buttonActions"
+      :sign="button.sign"
+      :key="button.sign"
+      @click="commit(button.action, button.sign)"
+    />
   </div>
 </template>
 
 <script>
+import { useStore } from "vuex";
+import { buttonActions } from "../data";
 import Button from "./Button.vue";
 
 export default {
   name: "ButtonSection",
   components: {
     Button,
+  },
+  setup() {
+    const state = useStore();
+    const commit = state.commit;
+
+    return {
+      buttonActions,
+      commit,
+    };
   },
 };
 </script>
